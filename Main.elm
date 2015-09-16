@@ -1,7 +1,8 @@
-import Effects exposing (Never)
-import SearchBar exposing (init, update, view)
 import StartApp
 import Task
+import Effects exposing (Never)
+
+import FlickrViewer exposing (..)
 
 app = StartApp.start
       { init = init ""
@@ -16,3 +17,5 @@ main = app.html
 port tasks : Signal (Task.Task Never ())
 port tasks =
   app.tasks
+
+
