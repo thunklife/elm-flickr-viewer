@@ -17,13 +17,14 @@ type alias Model =
   { searchTerm : String
   , results : List Photo
   , selectedImage : Photo
+  , hasPhoto : Bool
   }
 
 -- INIT
 
 init : String -> (Model, Effects Action)
 init term =
-  ( Model term [] emptyPhoto, Effects.none)
+  ( Model term [] emptyPhoto False, Effects.none)
 
 
 -- ACTION
@@ -42,11 +43,11 @@ update action model =
     RunSearch ->
       (model, getPhotos model.searchTerm)
     SearchTerm term ->
-      (Model term model.results model.selectedImage, Effects.none)
+      (Model term model.results emptyPhoto False, Effects.none)
     ReturnResults maybeUrls ->
-      (Model model.searchTerm (Maybe.withDefault model.results maybeUrls) model.selectedImage, Effects.none)
+      (Model model.searchTerm (Maybe.withDefault model.results maybeUrls) emptyPhoto False, Effects.none)
     LoadFull photo ->
-      (Model model.searchTerm model.results photo, Effects.none)
+      (Model model.searchTerm model.results photo True, Effects.none)
 
 
 -- VIEW
@@ -54,30 +55,56 @@ update action model =
 view : Address Action -> Model -> Html
 view address model =
   div
-  [ class "mui-container"]
-  [ div
-    [ classList [ ("mui-form-inline", True), ("mui-form-group", True) ]]
-    [ input
-      [ id "search"
-      , on "input" targetValue (\s -> message address (SearchTerm s))
-      , class "mui-form-control"
-      , placeholder "Search"
+    [ class "mui-container"]
+    [ h1
+        []
+        [ text "Elm Flicker Viewer" ]
+    , div
+        [ class "mui-panel"]
+        [ div
+            [  ]
+            [ Html.form
+              [ onSubmit address RunSearch
+              , action "javascript:none"
+              ,class"mui-form-inline mui-form-group"
+              ]
+              [ input
+                  [ id "search"
+                  , on "input" targetValue (\s -> message address (SearchTerm s))
+                  , class "mui-form-control"
+                  , placeholder "Search"
+                  ]
+                  []
+              , button
+                  [ id "runSearch"
+                  , class "mui-btn mui-btn-primary"
+                  , type' "submit"
+                  ]
+                  [ text "Search" ]
+              ]
+            ]
+        , div
+            []
+            [ div
+                [ class "mui-row" ]
+                [ div
+                    [ class "mui-col-md-8" ]
+                    [ img
+                        [ src (fullSizeUrl model.selectedImage)
+                        , classList [ ("show", model.hasPhoto) ]
+                        , id "fullSize"
+                        ]
+                        []
+                    ]
+                , div
+                    [ id "thumbs"
+                    , class "mui-col-md-4"
+                    ]
+                    (List.map (thumbnailLink address) model.results)
+                ]
+            ]
+          ]
       ]
-      []
-    , button
-      [ id "runSearch"
-      , onClick address RunSearch
-      , class "mui-btn mui-btn-primary"
-      ]
-      [ text "Search" ]
-    ]
-  , div
-    []
-    (List.map (thumbnailLink address) model.results)
-  , img
-    [ src (fullSizeUrl model.selectedImage) ]
-    []
-  ]
 
 thumbnailLink : Address Action -> Photo -> Html
 thumbnailLink address photo =

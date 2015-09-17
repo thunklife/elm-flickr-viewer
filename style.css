@@ -1,0 +1,31 @@
+body {
+ background-color: #EFEBE9;
+}
+
+h1 {
+  color: #424242;
+}
+
+#search {
+  width: 80%;
+}
+
+#runSearch {
+  width: 20%;
+}
+
+#thumbs a {
+  display: inline-block;
+  border: 6px solid white;
+  border-radius: 2px
+}
+
+#thumbs a:hover {
+  cursor: pointer;
+  border: 6px solid #E91E63;
+}
+
+#fullSize {
+  margin-top: 6px;
+  width: 100%;
+}
