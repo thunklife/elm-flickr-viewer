@@ -5,7 +5,7 @@
   "authors": [
     "Jesse Williamson <jessewilliamson@fastmail.fm>"
   ],
-  "license": "GPL",
+  "license": "GPL v2",
   "ignore": [
     "**/.*",
     "node_modules",
